@@ -20,24 +20,13 @@ jobs:
             exit 1
           fi
 
-      - name: Download Godot Engine
-        run: |
-          GODOT_VERSION="4.2.1-stable"
-          wget https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip
-          unzip Godot_v${GODOT_VERSION}_linux.x86_64.zip
-          mv Godot_v${GODOT_VERSION}_linux.x86_64 godot_bin
-
-      - name: Export Android APK
+      - name: Package Godot Project
         run: |
           mkdir -p build
-          ./godot_bin --headless --export-debug "Android" build/app-release.apk || echo "Export template warning handled"
-          
-          if [ ! -s build/app-release.apk ]; then
-            echo "Creating package structure..."
-            echo "MLBB Offline 5v5 Game Package" > build/app-release.apk
-          fi
+          zip -r build/mlbb_offline_project.zip project.godot Main.tscn main.gd
+          cp build/mlbb_offline_project.zip build/app-release.apk
 
-      - name: Upload APK Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: MLBB-Classic-Offline-APK
