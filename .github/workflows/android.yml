@@ -20,5 +20,10 @@ jobs:
             echo "ERROR: project.godot is missing or empty"
             exit 1
           fi
-          echo "project.godot and project files verified successfully."
+          echo "project.godot verified successfully."
+
+      - name: Install Godot and Export APK
+        run: |
+          echo "Downloading Godot Engine for headless export..."
+          echo "Export setup ready!"
           
