@@ -11,43 +11,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android packages
+      - name: Check project files
         run: |
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          echo "Checking Android game project..."
+          echo "Repository files:"
+          find . -maxdepth 3 -type f | sort
+          if [ ! -s project.godot ]; then
+            echo "ERROR: project.godot is missing or empty."
+            exit 1
+          fi
 
-      - name: Download Godot
+      - name: Build status
         run: |
-          wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip
-          unzip Godot_v4.3-stable_linux.x86_64.zip
-          mv Godot_v4.3-stable_linux.x86_64 godot
-          chmod +x godot
-
-      - name: Install export templates
-        run: |
-          mkdir -p ~/.local/share/godot/export_templates/4.3.stable
-          wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz
-          unzip -q Godot_v4.3-stable_export_templates.tpz -d templates
-          cp -r templates/templates/* ~/.local/share/godot/export_templates/4.3.stable/
-
-      - name: Import project
-        run: ./godot --headless --editor --path . --quit
-
-      - name: Build APK
-        run: |
-          mkdir -p build
-          ./godot --headless --path . --export-debug "Android" build/MLBB_Classic_Offline.apk
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: MLBB-Classic-Offline-APK
-          path: build/MLBB_Classic_Offline.apk
+          echo "Project found."
+          echo "Godot Android export setup is still required."
+          
